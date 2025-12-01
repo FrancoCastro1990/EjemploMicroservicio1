@@ -34,3 +34,5 @@ build/
 
 ### Secrets ###
 secretos-github.txt
+application-local.properties
+docker.env

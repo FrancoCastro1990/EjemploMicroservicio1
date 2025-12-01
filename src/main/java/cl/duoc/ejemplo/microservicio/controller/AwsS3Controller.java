@@ -1,5 +1,6 @@
 package cl.duoc.ejemplo.microservicio.controller;
 
+import java.io.File;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,15 +18,21 @@ import org.springframework.web.multipart.MultipartFile;
 
 import cl.duoc.ejemplo.microservicio.dto.S3ObjectDto;
 import cl.duoc.ejemplo.microservicio.service.AwsS3Service;
+import cl.duoc.ejemplo.microservicio.service.EfsService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/s3")
 @RequiredArgsConstructor
+@Slf4j
 public class AwsS3Controller {
 
 	@Autowired
 	private AwsS3Service awsS3Service;
+
+	@Autowired
+	private EfsService efsService;
 
 	// Listar objetos en un bucket
 	@GetMapping("/{bucket}/objects")
@@ -44,17 +51,28 @@ public class AwsS3Controller {
 				.contentType(MediaType.APPLICATION_OCTET_STREAM).body(fileBytes);
 	}
 
-	// Subir archivo
+	// Subir archivo (guarda en EFS temporalmente, luego sube a S3)
 	@PostMapping("/{bucket}/object")
 	public ResponseEntity<Void> uploadObject(@PathVariable String bucket, @RequestParam String key,
 			@RequestParam("file") MultipartFile file) {
 
 		try {
+			// Guardar en EFS temporalmente
+			String efsFilename = "uploads/" + key.replace("/", "_");
+			File efsFile = efsService.saveToEfs(efsFilename, file);
+			log.info("Archivo guardado en EFS: {}", efsFile.getAbsolutePath());
+
+			// Subir a S3
 			awsS3Service.upload(bucket, key, file);
+			log.info("Archivo subido a S3: {}/{}", bucket, key);
+
+			// Eliminar archivo temporal de EFS
+			efsService.deleteFromEfs(efsFilename);
+			log.info("Archivo temporal eliminado de EFS");
 
 			return ResponseEntity.ok().build();
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error("Error al subir archivo", e);
 			return ResponseEntity.internalServerError().build();
 		}
 	}

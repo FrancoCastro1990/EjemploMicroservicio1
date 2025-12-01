@@ -69,4 +69,15 @@ public class AwsS3Service {
 		DeleteObjectRequest deleteRequest = DeleteObjectRequest.builder().bucket(bucket).key(key).build();
 		s3Client.deleteObject(deleteRequest);
 	}
+
+	// Subir bytes directamente
+	public void uploadBytes(String bucket, String key, byte[] content, String contentType) {
+		PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+				.bucket(bucket)
+				.key(key)
+				.contentType(contentType)
+				.contentLength((long) content.length)
+				.build();
+		s3Client.putObject(putObjectRequest, RequestBody.fromBytes(content));
+	}
 }

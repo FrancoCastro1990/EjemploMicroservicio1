@@ -59,11 +59,15 @@ jobs:
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/my-app:latest
             # Parar y eliminar cualquier contenedor previo
             docker stop my-app || true && docker rm my-app || true
-            # Iniciar el contenedor con credenciales AWS
+            # Iniciar el contenedor con credenciales AWS, montaje EFS y variables RDS
             docker run -d --name my-app -p 8080:8080 \
+              -v /mnt/efs:/app/efs \
               -e AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} \
               -e AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} \
               -e AWS_SESSION_TOKEN=${{ secrets.AWS_SESSION_TOKEN }} \
               -e AWS_REGION=us-east-1 \
+              -e RDS_ENDPOINT=${{ secrets.RDS_ENDPOINT }} \
+              -e RDS_USERNAME=${{ secrets.RDS_USERNAME }} \
+              -e RDS_PASSWORD=${{ secrets.RDS_PASSWORD }} \
               ${{ secrets.DOCKERHUB_USERNAME }}/my-app:latest
           EOF
