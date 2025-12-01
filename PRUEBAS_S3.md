@@ -282,16 +282,6 @@ docker run -d --name microservicio-test -p 8081:8080 \
   microservicio-tickets:1.0
 ```
 
-### Contenido de docker.env:
-```
-AWS_ACCESS_KEY_ID=ASIA6ODU54J2FQRPGE6J
-AWS_SECRET_ACCESS_KEY=thVS8pZnLY11Ee7Wo0ZkJAjYFlapQipiTX+vWHFO
-AWS_SESSION_TOKEN=IQoJb3JpZ2luX2VjECkaCXVzLXdlc3QtMiJH...
-RDS_ENDPOINT=tickets-db.cnciuumg6ft8.us-east-1.rds.amazonaws.com
-RDS_USERNAME=ticketsadmin
-RDS_PASSWORD=Tickets2024Secure
-```
-
 ---
 
 ## 5. Resumen de Funcionalidades Probadas
