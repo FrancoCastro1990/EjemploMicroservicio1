@@ -14,8 +14,8 @@ import org.springframework.security.web.SecurityFilterChain;
  *
  * - CORS habilitado para permitir requests desde Postman/frontend
  * - CSRF deshabilitado (API REST stateless)
- * - Todos los endpoints requieren autenticación JWT válido
- * - Custom claims (extension_consultaRole) extraídos como roles
+ * - Todos los endpoints requieren token JWT válido con rol ADMIN
+ * - Custom claim 'extension_Roles' debe tener valor "ADMIN"
  */
 @Configuration
 @EnableWebSecurity
@@ -34,8 +34,8 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 // Endpoints públicos para health checks
                 .requestMatchers("/actuator/**").permitAll()
-                // Todos los demás endpoints requieren autenticación
-                .anyRequest().authenticated()
+                // Todos los demás endpoints requieren rol ADMIN
+                .anyRequest().hasRole("ADMIN")
             )
             .oauth2ResourceServer(oauth2 -> oauth2
                 .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthConverter))
