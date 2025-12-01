@@ -1,4 +1,4 @@
-# Microservicio de Tickets para Eventos
+# Microservicio de Tickets para Evento
 
 Microservicio Spring Boot para gestionar tickets de eventos con integracion AWS (S3, RDS PostgreSQL, EFS).
 
