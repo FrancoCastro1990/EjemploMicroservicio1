@@ -36,3 +36,4 @@ build/
 secretos-github.txt
 application-local.properties
 docker.env
+configuracion_iDaas.txt
